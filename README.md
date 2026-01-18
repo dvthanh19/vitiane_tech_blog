@@ -1,5 +1,5 @@
-# VITIANE's TECHNICAL BLOG (VTB)
-Welcome to **VITIANE's Technical Blog**!  
+# VITIANE's TECH BLOG STORAGE 
+Welcome to **Vitiane's Tech Blog Storage**!  
 This blog is a dedicated space where I, *Vitiane*, share my learning process and work experiences on technical topics mainly focusing on **Data Engineering**.
 
 ## About Me
@@ -39,5 +39,5 @@ git clone https://github.com/dvthanh19/vitiane_tech_blog.git
         - `feat`: when adding new features
         - `fix`: when fixing bugs
         - `docs`: when updating documentation
-    - blog_name: the name of the blog being modified (e.g., `data_model.snowkflake`)
+    - blog_name: the name of the blog being modified (e.g., `data_model.snowkflake.md`)
     - short_description: a brief description of the changes made, starting with a lowercase letter and verbs in present tense.
