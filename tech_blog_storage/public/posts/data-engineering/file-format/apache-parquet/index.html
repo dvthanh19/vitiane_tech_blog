@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="dark">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[101] Apache Parquet | Tech Blog Storage</title>
+<meta name="keywords" content="data engineering, file format, parquet">
+<meta name="description" content="Parquet - a format for efficient data storage and retrieval">
+<meta name="author" content="">
+<link rel="canonical" href="https://dvthanh19.github.io/posts/data-engineering/file-format/apache-parquet/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://dvthanh19.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://dvthanh19.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://dvthanh19.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://dvthanh19.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://dvthanh19.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://dvthanh19.github.io/posts/data-engineering/file-format/apache-parquet/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script><meta property="og:url" content="https://dvthanh19.github.io/posts/data-engineering/file-format/apache-parquet/">
+  <meta property="og:site_name" content="Tech Blog Storage">
+  <meta property="og:title" content="[101] Apache Parquet">
+  <meta property="og:description" content="Parquet - a format for efficient data storage and retrieval">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2026-01-18T22:53:48+07:00">
+    <meta property="article:modified_time" content="2026-01-18T22:53:48+07:00">
+    <meta property="article:tag" content="Data Engineering">
+    <meta property="article:tag" content="File Format">
+    <meta property="article:tag" content="Parquet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[101] Apache Parquet">
+<meta name="twitter:description" content="Parquet - a format for efficient data storage and retrieval">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://dvthanh19.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "[101] Apache Parquet",
+      "item": "https://dvthanh19.github.io/posts/data-engineering/file-format/apache-parquet/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[101] Apache Parquet",
+  "name": "[101] Apache Parquet",
+  "description": "Parquet - a format for efficient data storage and retrieval",
+  "keywords": [
+    "data engineering", "file format", "parquet"
+  ],
+  "articleBody": "APACHE PARQUET Introduction Apache Parquet is where I chose to start my blogging journey because it sits quietly at the core of almost every modern data system. It’s rarely the star of the conversation, yet it shapes how fast our queries run, how much we pay for storage, and how scalable our analytics platforms can be.\nOverview Apache Parquet is an open source, column-oriented data file format designed for efficient data storage and retrieval. It provides high performance compression and encoding schemes to handle complex data in bulk and is supported in many programming languages and analytics tools.\nRow-based and Columnar Format Row-based file format In traditional row-based storage formats (like CSV or JSON), data is stored sequentially by rows. This means that all the fields of a single record are stored together. While this is straightforward and easy to read, it can be inefficient for analytical queries that often only need a subset of columns.\nColumnar In contrast, columnar storage formats like Parquet store data by columns rather than by rows. This means that all the values for a single column are stored together. This approach offers several advantages for analytical workloads:\nFaster Query Performance: Queries that only need specific columns can read less data from disk, reducing I/O and speeding up query execution. Support better batch Processing and parallelization Efficient Encoding: Columnar formats can use specialized encoding techniques that are more effective when applied to homogeneous data types. Improved Compression: Similar data types are stored together, allowing for better compression ratios. However, columnar formats can be less efficient in:\ntransactional workloads that require frequent updates or inserts querys that need to access many columns, as this can lead to increased I/O compared to row-based formats. Combined Approach This is the balance between row-based and columnar storage formats to optimize for different use cases. Parquet, as a columnar format, is particularly well-suited for read-heavy analytical workloads, while row-based formats may still be preferred for write-heavy transactional systems.\nConcepts Terminology Block (HDFS block): a block in HDFS. The file format is designed to work well on top of HDFS. File: A HDFS file that must include the metadata for the file. It does not need to actually contain the data. Unit of parallelization MapReduce - File/Row Group IO - Column chunk Encoding/Compression - Page Parquet Format This file and the thrift definition should be read together to understand the format.\n4-byte magic number \"PAR1\" ",
+  "wordCount" : "1879",
+  "inLanguage": "en",
+  "datePublished": "2026-01-18T22:53:48+07:00",
+  "dateModified": "2026-01-18T22:53:48+07:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dvthanh19.github.io/posts/data-engineering/file-format/apache-parquet/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Tech Blog Storage",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dvthanh19.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://dvthanh19.github.io/" accesskey="h" title="Tech Blog Storage (Alt + H)">Tech Blog Storage</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://dvthanh19.github.io/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dvthanh19.github.io/archives" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://dvthanh19.github.io/posts" title="Posts">
+                    <span>Posts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://dvthanh19.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://dvthanh19.github.io/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      [101] Apache Parquet
+    </h1>
+    <div class="post-description">
+      Parquet - a format for efficient data storage and retrieval
+    </div>
+    <div class="post-meta"><span title='2026-01-18 22:53:48 +0700 +07'>January 18, 2026</span>&nbsp;·&nbsp;<span>9 min</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="apache-parquet">APACHE PARQUET<a hidden class="anchor" aria-hidden="true" href="#apache-parquet">#</a></h1>
+<h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>Apache Parquet is where I chose to start my blogging journey because it sits quietly at the core of almost every modern data system. It’s rarely the star of the conversation, yet it shapes how fast our queries run, how much we pay for storage, and how scalable our analytics platforms can be.</p>
+<h2 id="overview">Overview<a hidden class="anchor" aria-hidden="true" href="#overview">#</a></h2>
+<p>Apache Parquet is an open source, column-oriented data file format designed for efficient data storage and retrieval. It provides high performance compression and encoding schemes to handle complex data in bulk and is supported in many programming languages and analytics tools.</p>
+<h2 id="row-based-and-columnar-format">Row-based and Columnar Format<a hidden class="anchor" aria-hidden="true" href="#row-based-and-columnar-format">#</a></h2>
+<h3 id="row-based-file-format">Row-based file format<a hidden class="anchor" aria-hidden="true" href="#row-based-file-format">#</a></h3>
+<p>In traditional row-based storage formats (like CSV or JSON), data is stored sequentially by rows. This means that all the fields of a single record are stored together. While this is <strong>straightforward and easy to read</strong>, it <strong>can be inefficient for analytical queries</strong> that often <strong>only need a subset of columns</strong>.</p>
+<p><img alt="Row-based" loading="lazy" src="..."></p>
+<h3 id="columnar">Columnar<a hidden class="anchor" aria-hidden="true" href="#columnar">#</a></h3>
+<p>In contrast, columnar storage formats like Parquet store data by columns rather than by rows. This means that all the values for a single column are stored together. This approach offers several advantages for analytical workloads:</p>
+<p><img alt="Column-based" loading="lazy" src="..."></p>
+<ul>
+<li><strong>Faster Query Performance</strong>:
+<ul>
+<li>Queries that only need specific columns can read less data from disk, reducing I/O and speeding up query execution.</li>
+<li>Support better batch Processing and parallelization</li>
+</ul>
+</li>
+<li><strong>Efficient Encoding</strong>: Columnar formats can use specialized encoding techniques that are more effective when applied to homogeneous data types.</li>
+<li><strong>Improved Compression</strong>: Similar data types are stored together, allowing for better compression ratios.</li>
+</ul>
+<p>However, columnar formats can be <strong>less efficient in</strong>:</p>
+<ul>
+<li>transactional workloads that require <strong>frequent updates or inserts</strong></li>
+<li>querys that need to access many columns, as this can lead to increased I/O compared to row-based formats.</li>
+</ul>
+<h3 id="combined-approach">Combined Approach<a hidden class="anchor" aria-hidden="true" href="#combined-approach">#</a></h3>
+<p>This is the balance between row-based and columnar storage formats to optimize for different use cases. Parquet, as a columnar format, is particularly well-suited for read-heavy analytical workloads, while row-based formats may still be preferred for write-heavy transactional systems.</p>
+<p><img alt="Hybrid" loading="lazy" src="/posts/data-engineering/file-format/apache-parquet/hybrid-format.png"></p>
+<h2 id="concepts">Concepts<a hidden class="anchor" aria-hidden="true" href="#concepts">#</a></h2>
+<h3 id="terminology">Terminology<a hidden class="anchor" aria-hidden="true" href="#terminology">#</a></h3>
+<ul>
+<li><strong>Block (HDFS block):</strong> a block in HDFS. The file format is designed to work well on top of HDFS.</li>
+<li><strong>File:</strong> A HDFS file that must include the metadata for the file. It does not need to actually contain the data.</li>
+</ul>
+<h3 id="unit-of-parallelization">Unit of parallelization<a hidden class="anchor" aria-hidden="true" href="#unit-of-parallelization">#</a></h3>
+<ul>
+<li>MapReduce - File/Row Group</li>
+<li>IO - Column chunk</li>
+<li>Encoding/Compression - Page</li>
+</ul>
+<h2 id="parquet-format">Parquet Format<a hidden class="anchor" aria-hidden="true" href="#parquet-format">#</a></h2>
+<p>This file and the thrift definition should be read together to understand the format.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>    4-byte magic number <span style="color:#e6db74">&#34;PAR1&#34;</span>
+</span></span><span style="display:flex;"><span>    &lt;Column <span style="color:#ae81ff">1</span> Chunk 1&gt;
+</span></span><span style="display:flex;"><span>    &lt;Column <span style="color:#ae81ff">2</span> Chunk 1&gt;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    &lt;Column N Chunk 1&gt;
+</span></span><span style="display:flex;"><span>    &lt;Column <span style="color:#ae81ff">1</span> Chunk 2&gt;
+</span></span><span style="display:flex;"><span>    &lt;Column <span style="color:#ae81ff">2</span> Chunk 2&gt;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    &lt;Column N Chunk 2&gt;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    &lt;Column <span style="color:#ae81ff">1</span> Chunk M&gt;
+</span></span><span style="display:flex;"><span>    &lt;Column <span style="color:#ae81ff">2</span> Chunk M&gt;
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>    &lt;Column N Chunk M&gt;
+</span></span><span style="display:flex;"><span>    File Metadata
+</span></span><span style="display:flex;"><span>    4-byte length in bytes of file metadata <span style="color:#f92672">(</span>little endian<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    4-byte magic number <span style="color:#e6db74">&#34;PAR1&#34;</span>
+</span></span></code></pre></div><p>In the above example, there are <em>N columns</em> in this table, split into <em>M row groups</em>. The <a href="#"><strong>file metadata</strong></a> contains the locations of <strong>all the column chunk start locations</strong>. More details on what is contained in the metadata can be found in the <a href="#"><strong>Thrift definition</strong></a>.</p>
+<blockquote>
+<p><strong>Note:</strong> File metadata is written after the data to allow for single pass writing (write in 1 direction from start to end, do not go back to previous data).</p>
+</blockquote>
+<p>Readers are <strong>expected to first read the file metadata to find all the column chunks</strong> they are interested in. The columns chunks should then be read sequentially.</p>
+<p>The format is explicitly designed to separate the metadata from the data. This allows splitting columns into multiple files, as well as having a single metadata file reference multiple parquet files.</p>
+<h3 id="data-unit-in-parquet">Data Unit in Parquet<a hidden class="anchor" aria-hidden="true" href="#data-unit-in-parquet">#</a></h3>
+<p>A Parquet file is composed of the following main components:</p>
+<ul>
+<li><strong>Row group:</strong> A logical horizontal partitioning of the data into rows. There is <strong>no physical structure that is guaranteed for a row group</strong>. A row group consists of a column chunk for each column in the dataset.</li>
+<li><strong>Column chunk:</strong> A chunk of the data for a particular column. They live in a particular row group and are guaranteed to be <strong>contiguous in the file</strong>.</li>
+<li><strong>Page:</strong> Column chunks are divided up into pages. A page is conceptually an <strong>indivisible unit</strong> (in terms of compression and encoding). There can be multiple page types which are interleaved in a column chunk.</li>
+</ul>
+<p>Hierarchically, a file consists of one or more row groups. A row group contains exactly one column chunk per column. Column chunks contain one or more pages.</p>
+<h3 id="file-structure">File Structure<a hidden class="anchor" aria-hidden="true" href="#file-structure">#</a></h3>
+<p><img alt="Parquet File structure" loading="lazy" src="/posts/data-engineering/file-format/apache-parquet/file-structure.png"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>File/
+</span></span><span style="display:flex;"><span>|── Magic number
+</span></span><span style="display:flex;"><span>|── Row group/
+</span></span><span style="display:flex;"><span>|     |── Column chunk/
+</span></span><span style="display:flex;"><span>|            |── Page/
+</span></span><span style="display:flex;"><span>|                   |── Page header
+</span></span><span style="display:flex;"><span>|                   |── Repetition levels
+</span></span><span style="display:flex;"><span>|                   |── Definition levels
+</span></span><span style="display:flex;"><span>|                   |── Values
+</span></span><span style="display:flex;"><span>|── Footer/
+</span></span><span style="display:flex;"><span>|      |── File metadata
+</span></span><span style="display:flex;"><span>|      |── Row group metadata/
+</span></span><span style="display:flex;"><span>|      |      |── Column metadata
+</span></span><span style="display:flex;"><span>|      |── Footer Length
+</span></span><span style="display:flex;"><span>|── Magic number
+</span></span></code></pre></div><p>File &gt; Row Group &gt; Column Chunk &gt; Page</p>
+<p>Magic Number: The file starts and ends with a magic number &ldquo;PAR1&rdquo; to identify it as a Parquet file.</p>
+<p>Page Types:</p>
+<ul>
+<li><code>DATA_PAGE</code>: Contains the actual data values along with repetition and definition levels.</li>
+<li><code>DATA_PAGE_V2</code>: An enhanced version of <code>DATA_PAGE</code> with improved encoding and compression options.</li>
+<li><code>DICTIONARY_PAGE</code>: Contains a dictionary of unique values for dictionary encoding.</li>
+<li><code>INDEX_PAGE</code>: Contains index information to facilitate faster data retrieval</li>
+</ul>
+<h3 id="metadata">Metadata<a hidden class="anchor" aria-hidden="true" href="#metadata">#</a></h3>
+<p>There are two types of metadata: file metadata, and page header metadata.</p>
+<p>All thrift structures are serialized using the TCompactProtocol. The full definition of these structures is given in the Parquet Thrift definition. ???</p>
+<h4 id="file-metadata">File metadata<a hidden class="anchor" aria-hidden="true" href="#file-metadata">#</a></h4>
+<p>In the diagram below, file metadata is described by the FileMetaData structure. This file metadata provides offset and size information useful when navigating the Parquet file.
+<img alt="File Metadata" loading="lazy" src="/posts/data-engineering/file-format/apache-parquet/file-metadata.svg">
+<em><strong>Note:</strong> observe the class structure (attributes, attributes&rsquo; data type) to know how Parquet build its own metadata</em></p>
+<h4 id="page-header">Page Header<a hidden class="anchor" aria-hidden="true" href="#page-header">#</a></h4>
+<p>Page header metadata (<code>PageHeader</code> and children in the diagram) is stored in-line with the page data, and is used in the reading and decoding of data.
+<img alt="Page Header" loading="lazy" src="/posts/data-engineering/file-format/apache-parquet/page-header.svg"></p>
+<h3 id="data-page">Data Page<a hidden class="anchor" aria-hidden="true" href="#data-page">#</a></h3>
+<p>For data pages, the <strong>3 pieces of information</strong> are encoded back to back, after the page header. No padding is allowed in the data page. In order we have 3 pieces in a data page:</p>
+<ul>
+<li>repetition levels data: describe how deeply nested each value is.
+<ul>
+<li>default value = 1 (not nested)</li>
+<li>not be encoded</li>
+</ul>
+</li>
+<li>definition levels data: describe whether a value is null or present.
+<ul>
+<li>skipped if column is required (must not null)</li>
+<li>??? (chap nhan ko du sau temporarily skipped)</li>
+</ul>
+</li>
+<li>encoded values: actual value of file.
+<ul>
+<li>is always required
+The value of <code>uncompressed_page_size</code> specified in the header is for all the 3 pieces combined.</li>
+</ul>
+</li>
+</ul>
+<p>??? recheck below
+Why need repetition levels and definition levels?</p>
+<ul>
+<li>Parquet is designed to handle complex nested data structures (like lists and maps). Repetition levels help to represent the structure of these nested data.</li>
+<li>Definition levels are used to efficiently represent nullable fields. They indicate whether a particular value is present or null, allowing for efficient storage and retrieval of optional data.</li>
+</ul>
+<h3 id="extensibility">Extensibility<a hidden class="anchor" aria-hidden="true" href="#extensibility">#</a></h3>
+<p>Parquet is a long-lived storage format used across many engines (Spark, Hive, Presto, Flink, etc.). Once data is written, it may need to be read years later by older or different implementations.</p>
+<p>Therefore, the format must:</p>
+<ul>
+<li>Support new features</li>
+<li>Avoid breaking existing readers</li>
+<li>Allow partial understanding of a file</li>
+</ul>
+<p>There are many places in the format for compatible extensions:</p>
+<ul>
+<li><strong>File Version:</strong> The file metadata contains a version.</li>
+<li><strong>Encodings:</strong> Encodings are specified by enum and more can be added in the future.</li>
+<li><strong>Page types:</strong> Additional page types can be added and safely skipped.</li>
+</ul>
+<p>Finally, this extensibility helps Parquet to ensure that:</p>
+<ul>
+<li>New features can be added incrementally</li>
+<li>Older readers remain functional</li>
+<li>The ecosystem can innovate without format fragmentation</li>
+</ul>
+<h3 id="optimization">Optimization<a hidden class="anchor" aria-hidden="true" href="#optimization">#</a></h3>
+<h2 id="encoding">Encoding<a hidden class="anchor" aria-hidden="true" href="#encoding">#</a></h2>
+<h2 id="compression">Compression<a hidden class="anchor" aria-hidden="true" href="#compression">#</a></h2>
+<h2 id="operation-on-parquet-file">Operation on Parquet file<a hidden class="anchor" aria-hidden="true" href="#operation-on-parquet-file">#</a></h2>
+<h3 id="writing-parquet-file-process">Writing Parquet File Process<a hidden class="anchor" aria-hidden="true" href="#writing-parquet-file-process">#</a></h3>
+<p><img alt="Writing Parquet File Process" loading="lazy" src="/posts/data-engineering/file-format/apache-parquet/writing-process.webp"></p>
+<ul>
+<li>
+<p>The application <strong>issues a written request</strong> with parameters like the data, the compression scheme for each column (optional), the encoding scheme for each column (optional), the file scheme (write to one file or multiple files), custom metadata, etc.</p>
+</li>
+<li>
+<p>The <strong>Parquet Writer first collects information</strong>, such as the data schema, the null appearance, the encoding scheme, and all the column types, which are recorded in FileMetadata.</p>
+</li>
+<li>
+<p>Next, the <strong>Writer writes the magic number at the beginning</strong> of the file.</p>
+</li>
+<li>
+<p>Then, it <strong>calculates the number of row groups</strong> based on the row group’s max size (configurable) and the data’s size. This step also determines which subset of data belongs to which row group. After that, it starts the physical writing process for each row group.</p>
+</li>
+<li>
+<p>For each row group, it <strong>iterates through the column list to write each column chunk</strong> for the row group. This step will use the compression scheme specified by the user (the default is none) to <strong>compress</strong> the data when writing the chunks.</p>
+</li>
+<li>
+<p>The chunk writing process begins by <strong>calculating the number of rows per page</strong> using the max page size and the chunk size. Next, it will try to <strong>calculate the column&rsquo;s min/max statistic</strong>. (This calculation is only applied to columns with a measurable type, such as integer or float.)</p>
+</li>
+<li>
+<p>Then, the <strong>column chunk is written page by page sequentially</strong>. Each page has a header that includes the page’s number of rows, the page’s encoding for data, repetition, and definition. If dictionary encoding is used for that column, the dictionary page is stored before the data page. A dictionary page also has the associated page header.</p>
+</li>
+<li>
+<p>After writing all the pages for the column chunk, the Parquet Writer <strong>constructs the column chunk metadata for that chunk</strong>, which includes information like min/max of the column (if has), total_uncompressed_size, total_compressed_size, the first data page offset, the first dictionary page offset.</p>
+</li>
+<li>
+<p>The column chunk writing <strong>process continues until all columns in the row group are written</strong> to disk, ensuring that the column chunks are stored contiguously. The metadata for each column chunk is recorded in the row group metadata.</p>
+</li>
+<li>
+<p>After writing all the row groups, all <strong>row groups’ metadata is recorded in the FileMetadata</strong>.</p>
+</li>
+<li>
+<p>The <strong>FileMetadata is written to the footer</strong>.</p>
+</li>
+<li>
+<p>The entire process <strong>finishes by writing the magic number</strong> at the end of the file.</p>
+</li>
+</ul>
+<h3 id="reading-parquet-file-process">Reading Parquet File Process<a hidden class="anchor" aria-hidden="true" href="#reading-parquet-file-process">#</a></h3>
+<p><img alt="Writing Parquet File Process" loading="lazy" src="/posts/data-engineering/file-format/apache-parquet/reading-process.webp"></p>
+<h2 id="faq">FAQ<a hidden class="anchor" aria-hidden="true" href="#faq">#</a></h2>
+<p>&hellip;</p>
+<h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
+<ul>
+<li>
+<p><a href="https://parquet.apache.org/docs/">Apache Parquet Official Documentation</a></p>
+</li>
+<li>
+<p><a href="https://vutr.substack.com/p/the-overview-of-parquet-file-format">[Blog] I spent 8 hours learning Parquet. Here’s what I discovered - VuTr</a></p>
+</li>
+<li>
+<p><a href="https://www.databricks.com/glossary/what-is-parquet">What is Parquet? - Databricks</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-01-an-introduction-b62a5bcf70f8">All About Parquet Part 01 — An Introduction - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-02-parquets-columnar-storage-model-8382e92c9815">All About Parquet Part 02 — Parquet’s Columnar Storage Model - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-03-parquet-file-structure-pages-row-groups-and-columns-d7c7e54a8311">All About Parquet Part 03 — Parquet File Structure | Pages, Row Groups, and Columns - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-04-schema-evolution-in-parquet-c2c2b1aa6141">All About Parquet Part 04 - Schema Evolution in Parquet - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-05-compression-techniques-in-parquet-442f37a66345">All About Parquet Part 05 - Compression Techniques in Parquet - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-06-encoding-in-parquet-optimizing-for-storage-b857ebfcf9a9">All About Parquet Part 06 - Encoding in Parquet | Optimizing for Storage - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-07-metadata-in-parquet-improving-data-efficiency-9a613b099fb7">All About Parquet Part 07 - Metadata in Parquet | Improving Data Efficiency - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-08-reading-and-writing-parquet-files-in-python-3b395567eebe">All About Parquet Part 08 - Reading and Writing Parquet Files in Python - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-09-parquet-in-data-lake-architectures-b6bbfff0a0ce">All About Parquet Part 09 - Parquet in Data Lake Architectures - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/data-engineering-with-dremio/all-about-parquet-part-10-performance-tuning-and-best-practices-with-parquet-d697ba4e8a57">All About Parquet Part 10 - Performance Tuning and Best Practices with Parquet - Alex Merced</a></p>
+</li>
+<li>
+<p><a href="https://towardsdatascience.com/anatomy-of-a-parquet-file/">Anatomy of a Parquet File - Towards Data Science</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/watch?v=O-KDGAgdTd4&amp;t=1s">[Video] Tại sao file Parquet lại là lựa chọn của Spark ?</a></p>
+</li>
+<li>
+<p><a href="https://arrow.apache.org/rust/parquet/basic/enum.PageType.html">Enum PageType</a></p>
+</li>
+</ul>
+<p>Vì thế file Parquet sẽ nhẹ hơn các dạng lưu trữ khác. Ví dụ một file CSV 1TB khi chuyển sang dạng Parquet chỉ khoảng 100GB (còn 10% không gian lưu trữ).</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://dvthanh19.github.io/tags/data-engineering/">Data Engineering</a></li>
+      <li><a href="https://dvthanh19.github.io/tags/file-format/">File Format</a></li>
+      <li><a href="https://dvthanh19.github.io/tags/parquet/">Parquet</a></li>
+    </ul>
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [101] Apache Parquet on x"
+            href="https://x.com/intent/tweet/?text=%5b101%5d%20Apache%20Parquet&amp;url=https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f&amp;hashtags=dataengineering%2cfileformat%2cparquet">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [101] Apache Parquet on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f&amp;title=%5b101%5d%20Apache%20Parquet&amp;summary=%5b101%5d%20Apache%20Parquet&amp;source=https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [101] Apache Parquet on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f&title=%5b101%5d%20Apache%20Parquet">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [101] Apache Parquet on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [101] Apache Parquet on whatsapp"
+            href="https://api.whatsapp.com/send?text=%5b101%5d%20Apache%20Parquet%20-%20https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [101] Apache Parquet on telegram"
+            href="https://telegram.me/share/url?text=%5b101%5d%20Apache%20Parquet&amp;url=https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share [101] Apache Parquet on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%5b101%5d%20Apache%20Parquet&u=https%3a%2f%2fdvthanh19.github.io%2fposts%2fdata-engineering%2ffile-format%2fapache-parquet%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="https://dvthanh19.github.io/">Tech Blog Storage</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
