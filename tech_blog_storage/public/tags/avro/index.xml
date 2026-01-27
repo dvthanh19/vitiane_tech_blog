@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Avro on Tech Blog Storage</title>
-    <link>https://dvthanh19.github.io/tags/avro/</link>
+    <link>https://the-vitiane-tbs.github.io/tags/avro/</link>
     <description>Recent content in Avro on Tech Blog Storage</description>
     <generator>Hugo -- 0.154.5</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 18 Jan 2026 22:53:48 +0700</lastBuildDate>
-    <atom:link href="https://dvthanh19.github.io/tags/avro/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://the-vitiane-tbs.github.io/tags/avro/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[101] Apache Avro</title>
-      <link>https://dvthanh19.github.io/posts/data-engineering/file-format/apache-avro/</link>
+      <link>https://the-vitiane-tbs.github.io/posts/data-engineering/file-format/apache-avro/</link>
       <pubDate>Sun, 18 Jan 2026 22:53:48 +0700</pubDate>
-      <guid>https://dvthanh19.github.io/posts/data-engineering/file-format/apache-avro/</guid>
+      <guid>https://the-vitiane-tbs.github.io/posts/data-engineering/file-format/apache-avro/</guid>
       <description>...</description>
     </item>
   </channel>
