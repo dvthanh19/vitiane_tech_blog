@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Data Engineering on Tech Blog Storage</title>
-    <link>https://the-vitiane-tbs.github.io/tags/data-engineering/</link>
+    <link>http://localhost:1313/tags/data-engineering/</link>
     <description>Recent content in Data Engineering on Tech Blog Storage</description>
     <generator>Hugo -- 0.154.5</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 18 Jan 2026 22:53:48 +0700</lastBuildDate>
-    <atom:link href="https://the-vitiane-tbs.github.io/tags/data-engineering/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/data-engineering/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>[101] Apache Avro</title>
-      <link>https://the-vitiane-tbs.github.io/posts/data-engineering/file-format/apache-avro/</link>
+      <link>http://localhost:1313/posts/data-engineering/file-format/apache-avro/</link>
       <pubDate>Sun, 18 Jan 2026 22:53:48 +0700</pubDate>
-      <guid>https://the-vitiane-tbs.github.io/posts/data-engineering/file-format/apache-avro/</guid>
+      <guid>http://localhost:1313/posts/data-engineering/file-format/apache-avro/</guid>
       <description>...</description>
     </item>
     <item>
       <title>[101] Apache Parquet</title>
-      <link>https://the-vitiane-tbs.github.io/posts/data-engineering/file-format/apache-parquet/</link>
+      <link>http://localhost:1313/posts/data-engineering/file-format/apache-parquet/</link>
       <pubDate>Sun, 18 Jan 2026 22:53:48 +0700</pubDate>
-      <guid>https://the-vitiane-tbs.github.io/posts/data-engineering/file-format/apache-parquet/</guid>
+      <guid>http://localhost:1313/posts/data-engineering/file-format/apache-parquet/</guid>
       <description>Parquet - a format for efficient data storage and retrieval</description>
     </item>
   </channel>
