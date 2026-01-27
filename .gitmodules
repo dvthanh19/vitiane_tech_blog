@@ -1,0 +1,13 @@
+[submodule "themes/hugo-book"]
+	path = themes/hugo-book
+	url = https://github.com/alex-shpak/hugo-book
+[submodule "vitiane_tech_blog_storage/themes/hugo-book"]
+	path = vitiane_tech_blog_storage/themes/hugo-book
+	url = https://github.com/alex-shpak/hugo-book
+[submodule "vitiane_tech_blog_storage/public"]
+	path = vitiane_tech_blog_storage/public
+	url = https://github.com/dvthanh19/the-vitiane-TBS.github.io.git
+	branch = main
+[submodule "tech_blog_storage/themes/PaperMod"]
+	path = tech_blog_storage/themes/PaperMod
+	url = https://github.com/adityatelange/hugo-PaperMod.git
